@@ -483,7 +483,7 @@ class SuspensionController:
                    (trans,rot) = self.listener.lookupTransform('inertial', 'wheel_f_r', rospy.Time(0))
                elif i == 3:
                    (trans,rot) = self.listener.lookupTransform('inertial', 'wheel_p_r', rospy.Time(0))
-               self.deltaH_inertial[i]= -trans[2] + 0.090
+               self.deltaH_inertial[i]= -trans[2] + 0.090 
            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                rospy.logwarn("no_info inertial to wheel %i", i+1)
                self.deltaH_inertial[i]= 0.0
@@ -501,8 +501,9 @@ class SuspensionController:
             angles = euler_from_quaternion(rot)
             #rospy.logdebug('rotation: ',[(180.0/math.pi)*i for i in angles])
             rospy.logdebug("rotazione chassis: %f %f %f",angles[0],angles[1],angles[2])
-            self.altezza=min(0.05 + self.range_front*math.cos(math.fabs(angles[1]))*math.cos(math.fabs(angles[0])),0.05 + self.range_post*math.cos(math.fabs(angles[1]))*math.cos(math.fabs(angles[0])),min(self.deltaH_chassis))
-            rospy.logdebug("altezza chassis corretta da range: %f", self.altezza -0.05)
+            #TODO uso altezza da inertial, dovrebbe correggere inclinazione chassis
+            self.altezza=min(0.05 + self.range_front*math.cos(math.fabs(angles[1]))*math.cos(math.fabs(angles[0])),0.05 + self.range_post*math.cos(math.fabs(angles[1]))*math.cos(math.fabs(angles[0])),min(self.deltaH_inertial))
+            rospy.logdebug("altezza chassis corretta da range e sosp: %f", self.altezza -0.05)
             rospy.logdebug("altezza richiesta: %f",self.req_height -0.05)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             rospy.logwarn("no_info base_link to chassis") #continue
@@ -569,7 +570,7 @@ class SuspensionController:
             #rospy.logdebug('rotation: ',[(180.0/math.pi)*i for i in angles])
             rospy.logdebug("angoli chassis_virtuale: %f %f %f",angles[0],angles[1],angles[2])
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            rospy.logwarn('no_info base_link toi chassis_virtuale') #continue)
+            rospy.logwarn('no_info base_link to chassis_virtuale') #continue)
             angles = [0,0,0]
             trans = [0,0,0]
         self.angoli_chassis_virtuale = angles
