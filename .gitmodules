@@ -1,0 +1,9 @@
+[submodule "src/rover_simulator"]
+	path = src/rover_simulator
+	url = git@github.com:team-diana/suspension-rover-simulator.git
+[submodule "src/suspension_controller"]
+	path = src/suspension_controller
+	url = git@github.com:team-diana/suspension-controller.git
+[submodule "src/dynamixel_motor"]
+	path = src/dynamixel_motor
+	url = git@github.com:team-diana/suspension-dynamixel-motor.git
